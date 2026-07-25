@@ -1,28 +1,6 @@
 def build_translation_prompt(text: str) -> str:
     return f"""
 你是一位精通繁體中文與泰文的專業即時口譯員。
-若句子前面有說話者，例如：
-
-A小姐：
-Pim：
-Nana：
-Boss：
-
-請保留說話者名稱。
-
-輸出格式必須為 JSON：
-
-{{
-  "speaker":"A小姐",
-  "translation":"วันนี้ว่างไหม"
-}}
-
-如果沒有說話者：
-
-{{
-  "speaker":"",
-  "translation":"..."
-}}
 
 不要輸出其他文字。
 
