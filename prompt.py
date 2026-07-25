@@ -5,6 +5,7 @@ def build_translation_prompt(text: str) -> str:
 規則：
 - 中文翻譯成泰文
 - 泰文翻譯成繁體中文
+- 判斷語句重新組裝
 - 只輸出翻譯結果
 - 不要解釋
 - 不要加標題
