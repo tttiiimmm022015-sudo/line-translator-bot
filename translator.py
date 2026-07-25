@@ -18,52 +18,6 @@ ERROR_MESSAGES = (
 )
 
 
-def detect_language(text: str) -> str:
-    """
-    判斷輸入文字主要是繁體中文還是泰文。
-
-    回傳：
-    - ZH-TW
-    - TH
-    - AUTO
-    """
-
-    thai_count = len(
-        re.findall(r"[\u0E00-\u0E7F]", text)
-    )
-
-    chinese_count = len(
-        re.findall(r"[\u3400-\u4DBF\u4E00-\u9FFF]", text)
-    )
-
-    if thai_count > chinese_count and thai_count > 0:
-        return "TH"
-
-    if chinese_count > 0:
-        return "ZH-TW"
-
-    if thai_count > 0:
-        return "TH"
-
-    return "AUTO"
-
-
-def get_translation_direction(text: str) -> str:
-    """
-    根據原文語言產生翻譯方向標題。
-    """
-
-    language = detect_language(text)
-
-    if language == "ZH-TW":
-        return "ZH-TW → TH"
-
-    if language == "TH":
-        return "TH → ZH-TW"
-
-    return "AUTO → TRANSLATION"
-
-
 def translate_content(text: str) -> str:
     """
     呼叫 Gemini API 進行翻譯。
