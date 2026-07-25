@@ -1,3 +1,5 @@
+import re
+
 from google import genai
 from google.genai.errors import ClientError
 
@@ -16,9 +18,55 @@ ERROR_MESSAGES = (
 )
 
 
+def detect_language(text: str) -> str:
+    """
+    判斷輸入文字主要是繁體中文還是泰文。
+
+    回傳：
+    - ZH-TW
+    - TH
+    - AUTO
+    """
+
+    thai_count = len(
+        re.findall(r"[\u0E00-\u0E7F]", text)
+    )
+
+    chinese_count = len(
+        re.findall(r"[\u3400-\u4DBF\u4E00-\u9FFF]", text)
+    )
+
+    if thai_count > chinese_count and thai_count > 0:
+        return "TH"
+
+    if chinese_count > 0:
+        return "ZH-TW"
+
+    if thai_count > 0:
+        return "TH"
+
+    return "AUTO"
+
+
+def get_translation_direction(text: str) -> str:
+    """
+    根據原文語言產生翻譯方向標題。
+    """
+
+    language = detect_language(text)
+
+    if language == "ZH-TW":
+        return "ZH-TW → TH"
+
+    if language == "TH":
+        return "TH → ZH-TW"
+
+    return "AUTO → TRANSLATION"
+
+
 def translate_content(text: str) -> str:
     """
-    只負責呼叫 Gemini 翻譯。
+    呼叫 Gemini API 進行翻譯。
     """
 
     try:
@@ -31,15 +79,20 @@ def translate_content(text: str) -> str:
             },
         )
 
-        if not response.text:
+        translated_text = response.text
+
+        if not translated_text:
             return "⚠️ 翻譯失敗，請稍後再試。"
 
-        return response.text.strip()
+        return translated_text.strip()
 
     except ClientError as error:
         error_message = str(error)
 
-        if "429" in error_message or "RESOURCE_EXHAUSTED" in error_message:
+        if (
+            "429" in error_message
+            or "RESOURCE_EXHAUSTED" in error_message
+        ):
             return "⚠️ 今日翻譯額度已用完，請稍後再試。"
 
         print(f"Gemini API 錯誤：{error}")
@@ -50,29 +103,52 @@ def translate_content(text: str) -> str:
         return "⚠️ 系統暫時異常，請稍後再試。"
 
 
-def translate(text: str, display_name: str = "") -> str:
+def translate(
+    text: str,
+    display_name: str = "",
+) -> str:
     """
-    LINE Bot 呼叫的主要翻譯函式。
+    LINE Bot 主要翻譯函式。
 
-    text:
-        使用者輸入的文字
+    參數：
+    text：
+        使用者輸入的文字。
 
-    display_name:
-        發送者的 LINE 顯示名稱
+    display_name：
+        發送者的 LINE 顯示名稱。
+        沒有提供時不顯示名稱。
+
+    回覆範例：
+
+    👤 Pim
+
+    TH → ZH-TW
+
+    今天有客人嗎？
     """
+
+    if not text:
+        return "⚠️ 請輸入需要翻譯的內容。"
 
     text = text.strip()
 
     if not text:
         return "⚠️ 請輸入需要翻譯的內容。"
 
+    direction = get_translation_direction(text)
     translated = translate_content(text)
 
-    # 翻譯發生錯誤時，直接回傳錯誤訊息
     if translated.startswith(ERROR_MESSAGES):
         return translated
 
     if display_name:
-        return f"🤖 翻譯 {display_name}\n\n{translated}"
+        return (
+            f"👤 {display_name}\n\n"
+            f"{direction}\n\n"
+            f"{translated}"
+        )
 
-    return f"🤖 翻譯\n\n{translated}"
+    return (
+        f"{direction}\n\n"
+        f"{translated}"
+    )
