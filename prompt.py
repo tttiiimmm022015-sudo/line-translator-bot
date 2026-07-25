@@ -23,11 +23,11 @@ def build_translation_prompt(text: str) -> str:
 
 3. 酒店情境
 遇到下列內容時，以酒店/KTV常用說法翻譯：
-- 客人
-- 小姐
+- 客人，顧客
+- 小姐，女孩
 - 包廂
 - 大房、小房
-- 續時
+- 續時，續番
 - 指定
 - 上樓
 - 下樓
@@ -35,7 +35,7 @@ def build_translation_prompt(text: str) -> str:
 - 唱歌
 - 買單
 - 開瓶
-- 換小姐
+- 換小姐，換女孩
 - 上班
 - 下班
 - 老闆
