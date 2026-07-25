@@ -11,7 +11,7 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 def translate(text: str) -> str:
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-3.1-flash-lite",
             contents=build_translation_prompt(text),
             config={
                 "temperature": 0,
