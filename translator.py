@@ -7,7 +7,23 @@ from prompt import build_translation_prompt
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
+import json
 
+result = client.responses.create(...)
+
+data = json.loads(result.output_text)
+
+speaker = data["speaker"]
+translation = data["translation"]
+
+if speaker:
+    return f"""👩 {speaker}
+
+🤖 翻譯
+{translation}
+"""
+else:
+    return translation
 def translate(text: str) -> str:
     try:
         response = client.models.generate_content(
