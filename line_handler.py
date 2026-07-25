@@ -27,7 +27,7 @@ def handle_text_message(event):
     with ApiClient(configuration) as api_client:
         messaging_api = MessagingApi(api_client)
 
-        messaging_api.reply_message(
+        messaging_api.reply_message(    
             ReplyMessageRequest(
                 reply_token=event.reply_token,
                 messages=[
