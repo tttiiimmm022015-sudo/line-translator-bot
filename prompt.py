@@ -8,7 +8,7 @@ def build_translation_prompt(text: str) -> str:
     翻譯方向：
     1. 繁體中文 → 泰文
     2. 泰文 → 繁體中文
-    3. 英文 → 繁體中文
+    3. 英文 → 繁體中文 + 泰文
     """
 
     return f"""
