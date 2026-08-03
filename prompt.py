@@ -84,7 +84,7 @@ def build_translation_prompt(text: str) -> str:
 客戶 2 在 22:15 開始
 
 輸出：
-Khách 2 bắt đầu lúc 22:15.
+ลูกค้า 2 เริ่มเวลา 22:15
 
 ━━━━━━━━━━━━━━━━━━━━
 【短句處理】
